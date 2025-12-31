@@ -41,6 +41,9 @@ public class ProductDaoImpl implements ProductDao {
             map.put("search","%"+ productQueryParams.getSearch()+"%"); // SQL 的模糊查詢
         }
 
+        // 排序，有default值，不需要判斷 null
+        sql = sql + " ORDER BY "+ productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
+
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
         return productList;
     }
