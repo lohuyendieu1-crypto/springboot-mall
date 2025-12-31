@@ -1,17 +1,15 @@
 package com.su.springbootmall.dao.imp;
 
-import com.su.springbootmall.constant.ProductCategory;
 import com.su.springbootmall.dao.ProductDao;
 import com.su.springbootmall.dto.ProductRequest;
+import com.su.springbootmall.dto.ProductQueryParams;
 import com.su.springbootmall.model.Product;
 import com.su.springbootmall.rowmapper.ProductRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -26,21 +24,21 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts(ProductCategory category,String search) {
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
         String sql = "SELECT  product_id,product_name, category, image_url, price, stock, description," +
                 " created_date, last_modified_date" +
                 " FROM product WHERE 1=1"; // 1=1 是為了方便後續拼接 AND 條件
 
         Map<String, Object> map = new HashMap<>();
 
-        if(category != null){
+        if(productQueryParams.getCategory() != null){
             sql += " AND category = :category";
-            map.put("category",category.name()); // Enum 轉 String
+            map.put("category", productQueryParams.getCategory().name()); // Enum 轉 String
         }
 
-        if(search != null && !search.isEmpty()){
+        if(productQueryParams.getSearch() != null && !productQueryParams.getSearch().isEmpty()){
             sql += " AND product_name LIKE :search";
-            map.put("search","%"+search+"%"); // SQL 的模糊查詢
+            map.put("search","%"+ productQueryParams.getSearch()+"%"); // SQL 的模糊查詢
         }
 
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
