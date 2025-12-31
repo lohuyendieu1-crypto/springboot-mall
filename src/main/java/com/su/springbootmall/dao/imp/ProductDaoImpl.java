@@ -29,15 +29,8 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if(productQueryParams.getCategory() != null){
-            sql += " AND category = :category";
-            map.put("category", productQueryParams.getCategory().name()); // Enum 轉 String
-        }
+        sql = addFilteringSql(sql, map, productQueryParams);
 
-        if(productQueryParams.getSearch() != null && !productQueryParams.getSearch().isEmpty()){
-            sql += " AND product_name LIKE :search";
-            map.put("search","%"+ productQueryParams.getSearch()+"%"); // SQL 的模糊查詢
-        }
         // Integer.class 將 count 的值轉換成是一個 Integer 類型的返回值
         return namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
     }
@@ -51,15 +44,8 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if(productQueryParams.getCategory() != null){
-            sql += " AND category = :category";
-            map.put("category", productQueryParams.getCategory().name()); // Enum 轉 String
-        }
+        sql = addFilteringSql(sql, map, productQueryParams);
 
-        if(productQueryParams.getSearch() != null && !productQueryParams.getSearch().isEmpty()){
-            sql += " AND product_name LIKE :search";
-            map.put("search","%"+ productQueryParams.getSearch()+"%"); // SQL 的模糊查詢
-        }
 
         // 排序，有default值，不需要判斷 null
         sql = sql + " ORDER BY "+ productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
@@ -149,5 +135,20 @@ public class ProductDaoImpl implements ProductDao {
         Map<String,Object> map = new HashMap<>();
         map.put("productId",productId);
         namedParameterJdbcTemplate.update(sql,map);
+    }
+
+
+    private String addFilteringSql(String sql, Map<String,Object> map, ProductQueryParams productQueryParams){
+        // 查詢條件
+        if(productQueryParams.getCategory() != null){
+            sql += " AND category = :category";
+            map.put("category", productQueryParams.getCategory().name()); // Enum 轉 String
+        }
+
+        if(productQueryParams.getSearch() != null && !productQueryParams.getSearch().isEmpty()){
+            sql += " AND product_name LIKE :search";
+            map.put("search","%"+ productQueryParams.getSearch()+"%"); // SQL 的模糊查詢
+        }
+        return sql;
     }
 }
