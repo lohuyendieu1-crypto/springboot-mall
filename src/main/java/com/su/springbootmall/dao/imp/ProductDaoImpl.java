@@ -149,6 +149,17 @@ public class ProductDaoImpl implements ProductDao {
             sql += " AND product_name LIKE :search";
             map.put("search","%"+ productQueryParams.getSearch()+"%"); // SQL 的模糊查詢
         }
+
+        // 價格區間
+        if(productQueryParams.getMinPrice()!=null){
+            sql += " AND price >= :minPrice";
+            map.put("minPrice", productQueryParams.getMinPrice());
+        }
+
+        if(productQueryParams.getMaxPrice()!=null){
+            sql += " AND price <= :maxPrice";
+            map.put("maxPrice", productQueryParams.getMaxPrice());
+        }
         return sql;
     }
 }

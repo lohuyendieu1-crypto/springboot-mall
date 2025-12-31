@@ -9,6 +9,8 @@ public class ProductQueryParams {
     private String sort;
     private Integer limit;
     private Integer offset;
+    private Integer minPrice;
+    private Integer maxPrice;
 
     public ProductCategory getCategory() {
         return category;
@@ -56,5 +58,21 @@ public class ProductQueryParams {
 
     public void setOffset(Integer offset) {
         this.offset = offset;
+    }
+
+    public Integer getMaxPrice() {
+        return maxPrice;
+    }
+
+    public void setMaxPrice(Integer maxPrice) {
+        this.maxPrice = maxPrice;
+    }
+
+    public Integer getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMinPrice(Integer minPrice) {
+        this.minPrice = minPrice;
     }
 }

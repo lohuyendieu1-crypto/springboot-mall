@@ -30,6 +30,10 @@ public class productController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search,
 
+            // 新增：價格區間
+            @RequestParam(required = false) @Min(0) Integer minPrice,
+            @RequestParam(required = false) @Min(0) Integer maxPrice,
+
             // 排序 Sorting
             @RequestParam(defaultValue = "created_date") String orderBy,
             @RequestParam(defaultValue = "desc") String sort,
@@ -46,6 +50,8 @@ public class productController {
         productQueryParams.setSort(sort);
         productQueryParams.setLimit(limit);
         productQueryParams.setOffset(offset);
+        productQueryParams.setMinPrice(minPrice);
+        productQueryParams.setMaxPrice(maxPrice);
 
         // 取得 product list
         List<Product> productList = productService.getProducts(productQueryParams);
