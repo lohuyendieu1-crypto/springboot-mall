@@ -1,5 +1,6 @@
 package com.su.springbootmall.dao.imp;
 
+import com.su.springbootmall.constant.ProductCategory;
 import com.su.springbootmall.dao.ProductDao;
 import com.su.springbootmall.dto.ProductRequest;
 import com.su.springbootmall.model.Product;
@@ -25,12 +26,23 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(ProductCategory category,String search) {
         String sql = "SELECT  product_id,product_name, category, image_url, price, stock, description," +
                 " created_date, last_modified_date" +
-                " FROM product;";
+                " FROM product WHERE 1=1"; // 1=1 是為了方便後續拼接 AND 條件
 
         Map<String, Object> map = new HashMap<>();
+
+        if(category != null){
+            sql += " AND category = :category";
+            map.put("category",category.name()); // Enum 轉 String
+        }
+
+        if(search != null && !search.isEmpty()){
+            sql += " AND product_name LIKE :search";
+            map.put("search","%"+search+"%"); // SQL 的模糊查詢
+        }
+
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
         return productList;
     }
