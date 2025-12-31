@@ -1,14 +1,19 @@
 package com.su.springbootmall.dao.imp;
 
 import com.su.springbootmall.dao.ProductDao;
+import com.su.springbootmall.dto.ProductRequest;
 import com.su.springbootmall.model.Product;
 import com.su.springbootmall.rowmapper.ProductRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,5 +42,30 @@ public class ProductDaoImpl implements ProductDao {
         }else{
             return null;
         }
+    }
+
+
+    @Override
+    public Integer createProduct(ProductRequest productRequest) {
+        String sql = "INSERT INTO product (product_name,category,image_url,price,stock,description,created_date,last_modified_date)" +
+                " VALUES (:productName, :category, :imageUrl, :price, :stock, :description, :createdDate,:lastModifiedDate);";
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("productName",productRequest.getProductName())  // 注意 Enum 轉 String
+                .addValue("category",productRequest.getCategory().name())
+                .addValue("imageUrl",productRequest.getImageUrl())
+                .addValue("price",productRequest.getPrice())
+                .addValue("stock",productRequest.getStock())
+                .addValue("description",productRequest.getDescription());
+
+        Date now = new Date();
+        parameterSource.addValue("createdDate",now)
+                        .addValue("lastModifiedDate",now);
+
+        // KeyHolder 去拿回數據庫生成的主鍵。
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        namedParameterJdbcTemplate.update(sql,parameterSource,keyHolder);
+        return keyHolder.getKey().intValue();
     }
 }
