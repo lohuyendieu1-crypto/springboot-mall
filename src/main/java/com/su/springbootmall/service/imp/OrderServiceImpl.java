@@ -5,6 +5,7 @@ import com.su.springbootmall.dao.ProductDao;
 import com.su.springbootmall.dao.UserDao;
 import com.su.springbootmall.dto.BuyItem;
 import com.su.springbootmall.dto.CreateOrderRequest;
+import com.su.springbootmall.dto.OrderQueryParams;
 import com.su.springbootmall.model.Order;
 import com.su.springbootmall.model.OrderItem;
 import com.su.springbootmall.model.Product;
@@ -35,6 +36,21 @@ public class OrderServiceImpl implements OrderService {
 
     private final static Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        return orderDao.countOrder(orderQueryParams);
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        List<Order> orderList = orderDao.getOrders(orderQueryParams);
+        // 查詢每筆訂單的訂單詳細項目
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(order.getOrderId());
+            order.setOrderItemList(orderItemList);
+        }
+        return orderList;
+    }
 
     @Override
     public Order getOrderById(Integer orderId) {
@@ -63,7 +79,6 @@ public class OrderServiceImpl implements OrderService {
 
         for (BuyItem buyItem : createOrderRequest.getBuyItemList()) {
             Product product = productDao.getProductById(buyItem.getProductId());
-
 
             // 檢查 product 是否存在，庫存是否足夠
             if(product == null){
