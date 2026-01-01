@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
-public class CreatOrderRequest {
+public class CreateOrderRequest {
 
     @NotEmpty
     private List<BuyItem> buyItemList;

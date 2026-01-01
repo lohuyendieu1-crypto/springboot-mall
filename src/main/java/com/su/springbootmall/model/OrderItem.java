@@ -7,6 +7,10 @@ public class OrderItem {
     private Integer quantity;
     private Integer amount;
 
+    // 新增
+    private String productName;
+    private String imageUrl;
+
     public Integer getOrderItemId() {
         return orderItemId;
     }
@@ -45,5 +49,21 @@ public class OrderItem {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
